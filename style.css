@@ -36,9 +36,9 @@
    color: rgba(0 , 0, 0, 0.7);
    box-shadow: 2px 3px 6px rgba(0 , 0, 0, 0.2);
    padding: 10px;
-   border-top: solid;
-   border-width: 1px;
-   border-color: #3483fa;
+   border-left: solid;
+   border-width: 3px;
+   border-color: none;
    border-radius: 8px;
 }
 
