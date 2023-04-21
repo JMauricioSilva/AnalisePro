@@ -68,7 +68,7 @@ async function init(){
         },1500)
         
     }
-    
+
     const elemento = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1')
     if (elemento){
         const criarBotão = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1').insertAdjacentHTML('beforebegin',
@@ -166,6 +166,12 @@ async function init(){
         
            ` 
         );
+        
+        const caixaProduto = document.querySelector('.AnalisePro-container')
+        const corDiasProduto = (diffDays <= 120) ? caixaProduto.style.borderColor = "Green" :
+            (diffDays > 120 && diffDays <= 359) ? caixaProduto.style.borderColor = "Yellow" :
+            caixaProduto.style.borderColor = "Red"
+
     }, 1500);
 
      
