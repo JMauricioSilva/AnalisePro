@@ -18,7 +18,7 @@ async function init(){
     const titulos = []
     const ignoreWords = ['de', 'do', 'da', 'dos', 'das', 'a', 'o', 'em', 'no', 'na', 'um', 'uma', 'para', 'com', 'por', 'que', 'e', 'é', 'se', 'não', 'mais', 'como', 'ou', '-', '/', '+']
     const wordCount = {};
-
+    const qDias = []
     
 
        
@@ -45,9 +45,10 @@ async function init(){
         dias[a] = days
         const nivel = (vendas[a] / dias[a] >= 6 ) ? "Nivel 3" : (vendas[a] / dias[a] >= 3) && (vendas[a] / dias[a] < 6) ? "Nivel 2"
             : "Nivel 1"
+        
         nivelRes[a] = nivel
         const mediaVenDia = (vendas[a]/dias[a]).toFixed(2)
-        
+
         const containerHome = document.querySelectorAll('.ui-search-item__group--title.shops__items-group > a > h2') // Pesquisa do produto
         setTimeout(() =>{
             containerHome[a].insertAdjacentHTML(
@@ -59,13 +60,14 @@ async function init(){
             `
         
             )
-
+            const caixa = document.querySelectorAll('.container-home')    
+            const corDia = (dias[a] <= 120) ? caixa[a].style.borderColor = "Green" :
+            (dias[a] > 120 && dias[a] <= 359) ? caixa[a].style.borderColor = "Yellow" :
+            caixa[a].style.borderColor = "Red"
 
         },1500)
         
     }
-
-    
     
     const elemento = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1')
     if (elemento){
