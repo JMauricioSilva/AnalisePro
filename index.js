@@ -18,13 +18,9 @@ async function init(){
     const titulos = []
     const ignoreWords = ['de', 'do', 'da', 'dos', 'das', 'a', 'o', 'em', 'no', 'na', 'um', 'uma', 'para', 'com', 'por', 'que', 'e', 'é', 'se', 'não', 'mais', 'como', 'ou', '-', '/', '+']
     const wordCount = {};
-    const qDias = []
-    
-
-       
-    
-    //const botao = document.getElementsByClassName('palavraChave')
-
+    const idVendedor = []
+    const apiSellerRes = []
+    let semMedalha = 0, mercadoLider = 0, gold = 0, platinum = 0 
 
     for (let a = 0; a < mlbHome.length; a++){
         const idmlb = mlbHome[a]?.action.substr(51,64)
@@ -34,11 +30,25 @@ async function init(){
         vendas.push(apiResp[a][0]?.body.sold_quantity)
         datas.push(apiResp[a][0]?.body.start_time)
         titulos.push(apiResp[a][0]?.body.title)
+        idVendedor.push(apiResp[a][0].body.seller_id)
 
-        /*const apiVisitas = await handleMlApiV(`https://api.mercadolibre.com/items/${listmlb[a]}/visits/time_window?last=90&unit=day&ending=${formatdata(hoje)}`)
-        visitas.push(apiVisitas)*/
-        //console.log(visitas)
-    
+        const apiSeller = await handleMlApi(`https://api.mercadolibre.com/users/${idVendedor[a]}`)
+        apiSellerRes.push(apiSeller.seller_reputation.power_seller_status)
+        
+       switch (apiSellerRes[a]) {
+        case null:
+            semMedalha++
+            break;
+        case 'silver':
+            mercadoLider++
+            break;
+        case 'gold':
+            gold++
+            break;
+        case 'platinum':
+            platinum++    
+       }
+     
         const dataCriacao = new Date(datas[a]); // Pegando data de criação
         const umDia = 24 * 60 * 60 * 1000 // h m s m
         const days = Math.round(Math.abs(dataCriacao - hoje) / umDia) // Calcula o dias de criação
@@ -68,6 +78,24 @@ async function init(){
         },1500)
         
     }
+    
+
+    if (document.querySelector('.ui-search-main--only-products.ui-search-main--with-topkeywords.shops__search-main > aside > section > div:nth-child(1) > ul > li')){
+        const medalhas = document.querySelector('.ui-search-main--only-products.ui-search-main--with-topkeywords.shops__search-main > aside > section > div:nth-child(1) > ul > li')
+        medalhas.insertAdjacentHTML('beforebegin',
+        `
+        <ul class ="medalhas">
+            <li><span><img id = "semMedalha" title = "Sem Medalha" class = "iconMed" src = "https://cdn-icons-png.flaticon.com/512/7645/7645366.png"> ${semMedalha} | <img title = "Mercado Líder" class = "iconMed" src = "https://cdn-icons-png.flaticon.com/512/7645/7645366.png"> ${mercadoLider}
+            | <img title = "Mercado Líder Gold" class = "iconMed" src = "https://cdn-icons-png.flaticon.com/512/7645/7645279.png"> ${gold} | <img title = "Mercado Líder Platinum" class = "iconMed" src ="https://cdn-icons-png.flaticon.com/512/7645/7645294.png"> ${platinum}<span></li>
+        </ul>
+
+        `)
+    }
+
+    const nivelMedalha = document.querySelector('.medalhas')
+    const nivelConcorrencia = (semMedalha > mercadoLider) && (semMedalha > gold) && (semMedalha > platinum) ? nivelMedalha.style.borderColor = "Green" :
+    (mercadoLider > semMedalha) && (mercadoLider > platinum) || (mercadoLider >= gold) ? nivelMedalha.style.borderColor = "Yellow":
+    nivelMedalha.style.borderColor = "Red"
 
     const elemento = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1')
     if (elemento){
@@ -165,8 +193,8 @@ async function init(){
             </ul>
         
            ` 
-        );
-        
+        );        
+
         const caixaProduto = document.querySelector('.AnalisePro-container')
         const corDiasProduto = (diffDays <= 120) ? caixaProduto.style.borderColor = "Green" :
             (diffDays > 120 && diffDays <= 359) ? caixaProduto.style.borderColor = "Yellow" :
