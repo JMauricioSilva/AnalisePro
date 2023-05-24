@@ -47,3 +47,38 @@ ul.container-home {
     margin-top: -40px;
     background-color: #fff;
 }
+
+.iconMed{
+        width: 24px;
+        height: 24px;
+}
+
+.medalhas{
+    margin-bottom: 12px;
+    color: #3483fa;
+    box-shadow: 2px 3px 6px rgba(0 , 0, 0, 0.2);
+    padding: 10px;
+    border-top: solid;
+    border-width: 3px;
+    border-color: none;
+    border-radius: 8px;
+    width: 242px;
+}
+
+#semMedalha{
+    filter: hue-rotate(180deg);
+}
+
+.palavraChave{
+    margin-bottom: 12px;
+    color: #3483fa;
+    box-shadow: 2px 3px 6px rgba(0 , 0, 0, 0.2);
+    padding: 10px;
+    border-top: solid;
+    border-width: 3px;
+    border-color: none;
+    border-radius: 8px;
+    width: 242px;
+    border-bottom: aliceblue;
+    border-inline: none;
+}
