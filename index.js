@@ -20,7 +20,8 @@ async function init(){
     const wordCount = {};
     const idVendedor = []
     const apiSellerRes = []
-    let semMedalha = 0, mercadoLider = 0, gold = 0, platinum = 0 
+    let semMedalha = 0, mercadoLider = 0, gold = 0, platinum = 0
+    const medalhas = []
 
     for (let a = 0; a < mlbHome.length; a++){
         const idmlb = mlbHome[a]?.action.substr(51,64)
@@ -48,7 +49,16 @@ async function init(){
         case 'platinum':
             platinum++    
        }
-     
+       medalhas[a] = 
+       (apiSellerRes[a] === null) ?
+       `<img id = "semMedalha" class = "iconMed" src = "https://cdn-icons-png.flaticon.com/512/7645/7645366.png">` :
+       (apiSellerRes[a] === 'silver') ? 
+       `<img class = 'iconMed' src = 'https://cdn-icons-png.flaticon.com/512/7645/7645366.png'>` :
+       (apiSellerRes[a] === 'gold') ?
+       `<img class = 'iconMed' src = 'https://cdn-icons-png.flaticon.com/512/7645/7645279.png'>` :
+       `<img class = 'iconMed' src = 'https://cdn-icons-png.flaticon.com/512/7645/7645294.png'>`
+      
+
         const dataCriacao = new Date(datas[a]); // Pegando data de criação
         const umDia = 24 * 60 * 60 * 1000 // h m s m
         const days = Math.round(Math.abs(dataCriacao - hoje) / umDia) // Calcula o dias de criação
@@ -65,23 +75,23 @@ async function init(){
                 'beforebegin',
             `
             <ul class = "container-home">
-                 <li><span> ${dias[a]} dias | ${vendas[a]} Vendas | ${nivelRes[a]} - ${mediaVenDia} </span></li>
+            <li><span> ${medalhas[a]} | ${dias[a]} dia(s) | ${vendas[a]} venda(s) | ${nivelRes[a]} - ${mediaVenDia} </span></li>
             </ul>
             `
-        
-            )
+        )
             const caixa = document.querySelectorAll('.container-home')    
             const corDia = (dias[a] <= 120) ? caixa[a].style.borderColor = "Green" :
             (dias[a] > 120 && dias[a] <= 359) ? caixa[a].style.borderColor = "Yellow" :
             caixa[a].style.borderColor = "Red"
 
+            
+              
         },1500)
         
     }
     
-
-    if (document.querySelector('.ui-search-main--only-products.ui-search-main--with-topkeywords.shops__search-main > aside > section > div:nth-child(1) > ul > li')){
-        const medalhas = document.querySelector('.ui-search-main--only-products.ui-search-main--with-topkeywords.shops__search-main > aside > section > div:nth-child(1) > ul > li')
+    if (document.querySelector('.ui-search-main--only-products.shops__search-main > aside > section > div:nth-child(1) > ul > li')){
+        const medalhas = document.querySelector('.ui-search-main--only-products.shops__search-main > aside > section > div:nth-child(1) > ul > li')
         medalhas.insertAdjacentHTML('beforebegin',
         `
         <ul class ="medalhas">
@@ -90,13 +100,11 @@ async function init(){
         </ul>
 
         `)
+        const nivelMedalha = document.querySelector('.medalhas')
+        const nivelConcorrencia = (semMedalha > mercadoLider) && (semMedalha > gold) && (semMedalha > platinum) ? nivelMedalha.style.borderColor = "Green" :
+        (mercadoLider > semMedalha) && (mercadoLider > platinum) && (mercadoLider >= gold) || (gold > mercadoLider) && (gold > semMedalha) && (gold > platinum)? nivelMedalha.style.borderColor = "Yellow":
+        nivelMedalha.style.borderColor = "Red"
     }
-
-    const nivelMedalha = document.querySelector('.medalhas')
-    const nivelConcorrencia = (semMedalha > mercadoLider) && (semMedalha > gold) && (semMedalha > platinum) ? nivelMedalha.style.borderColor = "Green" :
-    (mercadoLider > semMedalha) && (mercadoLider > platinum) || (mercadoLider >= gold) ? nivelMedalha.style.borderColor = "Yellow":
-    nivelMedalha.style.borderColor = "Red"
-
     const elemento = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1')
     if (elemento){
         const criarBotão = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1').insertAdjacentHTML('beforebegin',
