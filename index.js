@@ -21,6 +21,7 @@ async function init(){
     const idVendedor = []
     const apiSellerRes = []
     let semMedalha = 0, mercadoLider = 0, gold = 0, platinum = 0
+    let Nivel1 = 0, Nivel2 = 0, Nivel3 = 0
     const medalhas = []
 
     for (let a = 0; a < mlbHome.length; a++){
@@ -66,6 +67,18 @@ async function init(){
         const nivel = (vendas[a] / dias[a] >= 6 ) ? "Nivel 3" : (vendas[a] / dias[a] >= 3) && (vendas[a] / dias[a] < 6) ? "Nivel 2"
             : "Nivel 1"
         
+            switch (nivel) {
+                case "Nivel 1":
+                    Nivel1++
+                    break;
+                case "Nivel 2":
+                    Nivel2++
+                    break;
+                case "Nivel 3":
+                    Nivel3++
+                    break;    
+               }
+
         nivelRes[a] = nivel
         const mediaVenDia = (vendas[a]/dias[a]).toFixed(2)
 
@@ -100,9 +113,18 @@ async function init(){
         </ul>
 
         `)
+
+        const quantidadeNivel = document.querySelector('.ui-search-main--only-products.shops__search-main > aside > section > div:nth-child(1) > ul > li')
+        quantidadeNivel.insertAdjacentHTML('beforebegin',
+        `
+        <ul class ="medalhas">
+            <li><span>Nivel 1 - ${Nivel1} | Nivel 2 - ${Nivel2} | Nivel 3 - ${Nivel3}<span></li>
+        </ul>
+
+        `)
         const nivelMedalha = document.querySelector('.medalhas')
         const nivelConcorrencia = (semMedalha > mercadoLider) && (semMedalha > gold) && (semMedalha > platinum) ? nivelMedalha.style.borderColor = "Green" :
-        (mercadoLider > semMedalha) && (mercadoLider > platinum) && (mercadoLider >= gold) || (gold > mercadoLider) && (gold > semMedalha) && (gold > platinum)? nivelMedalha.style.borderColor = "Yellow":
+        (mercadoLider > semMedalha) && (mercadoLider > platinum) && (mercadoLider > gold) || (gold >= mercadoLider) && (gold >= semMedalha) && (gold >= platinum)? nivelMedalha.style.borderColor = "Yellow":
         nivelMedalha.style.borderColor = "Red"
     }
     const elemento = document.querySelector('.ui-search-breadcrumb.shops__breadcrumb > h1')
@@ -152,9 +174,8 @@ async function init(){
      ?.content.split('id=')[1]
 
     //Capiturando as informações do produto pela API
-    const apiResponse = await handleMlApi(`https://api.mercadolibre.com/items?ids=${mlId}`)     
-    
-    
+    const apiResponse = await handleMlApi(`https://api.mercadolibre.com/items?ids=${mlId}`)
+        
     //Pegando as informaçãoes nescessarias da Api
     const {body: {price, category_id, sold_quantity, listing_type_id, start_time}} = apiResponse[0]
     
@@ -189,7 +210,7 @@ async function init(){
             'beforebegin',
             `
            
-            <ul class="AnalisePro-container">
+            <ul class="AnalisePro-container">               
                 <li>Quantidade Venda: <span>${sold_quantity}</span></li>
                 <li>Data de Criação: <span>${data} | ${diffDays} dias</span></li>
                 <li>Média de Venda: <span>${nivelUnd} | ${Math.trunc(mediaVendas)} por dia<br>${Math.trunc(mediaVenMes)} por Mês</span>
@@ -237,6 +258,7 @@ async function init(){
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
+                                    
                 },
                 
             };
